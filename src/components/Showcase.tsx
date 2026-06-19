@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Sparkles, Award, Shield, ArrowRight, MessageSquare, Compass } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import BounceCards from './BounceCards';
 
 interface ShowcaseProps {
   onSelectCollection: (collectionId: string) => void;
@@ -84,6 +85,49 @@ const SHOWCASE_TABS = [
     motto: "Refined masculine dignity in durable, solid gold."
   }
 ];
+
+const getBounceImages = (tabId: string): string[] => {
+  const current = SHOWCASE_TABS.find(t => t.id === tabId) || SHOWCASE_TABS[0];
+  const categoryImages: Record<string, string[]> = {
+    bridal: [
+      current.imageMain,
+      current.imageSide,
+      'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?auto=format&fit=crop&w=600&q=80'
+    ],
+    diamond: [
+      current.imageMain,
+      current.imageSide,
+      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1598560917505-59a3ad559071?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1518406437533-92711ede2aae?auto=format&fit=crop&w=600&q=80'
+    ],
+    gold: [
+      current.imageMain,
+      current.imageSide,
+      'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=600&q=80'
+    ],
+    silver: [
+      current.imageMain,
+      current.imageSide,
+      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1543294001-f7cbfe92237e?auto=format&fit=crop&w=600&q=80'
+    ],
+    'mens-jewellery': [
+      current.imageMain,
+      current.imageSide,
+      'https://images.unsplash.com/photo-1618403088890-3d9ff6f4c8da?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1569054011377-67d78a84620f?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=600&q=80'
+    ]
+  };
+
+  return categoryImages[tabId] || [current.imageMain, current.imageSide];
+};
 
 export default function Showcase({ onSelectCollection, onEnquire }: ShowcaseProps) {
   const [activeTab, setActiveTab] = useState('bridal');
@@ -202,62 +246,22 @@ export default function Showcase({ onSelectCollection, onEnquire }: ShowcaseProp
 
             </div>
 
-            {/* RIGHT: Overlapping Immersive Image Showcase (Bluestone signature design) */}
-            <div className="lg:col-span-7 flex justify-center items-center h-[350px] sm:h-[420px] relative">
+            {/* RIGHT: Overlapping Immersive Image Showcase with BounceCards */}
+            <div className="lg:col-span-7 flex justify-center items-center h-[380px] sm:h-[450px] relative overflow-visible mt-8 lg:mt-0">
               
               {/* Golden Background Mandala Outline Decor */}
-              <div className="absolute w-[240px] h-[240px] sm:w-[320px] sm:h-[320px] rounded-full border border-dashed border-gold/20 animate-[spin_60s_linear_infinite]" />
+              <div className="absolute w-[240px] h-[240px] sm:w-[320px] sm:h-[320px] rounded-full border border-dashed border-[#D4AF37]/25 animate-[spin_100s_linear_infinite]" />
               
-              {/* Left Secondary Layer Image with Floating Effect */}
-              <motion.div
-                className="absolute bg-white p-2.5 rounded-lg border border-gold/15 shadow-xl w-[190px] sm:w-[250px] top-6 left-2 sm:left-12 z-10"
-                animate={{ y: [0, -12, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <div className="aspect-[4/5] overflow-hidden rounded relative group">
-                  <img
-                    src={activeData.imageSide}
-                    alt="Jewellery closeup detail"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 bg-black/10 text-[9px] text-white p-2 flex items-end font-sans bg-gradient-to-t from-black/50 to-transparent font-medium uppercase tracking-wider">
-                    Macro Texture Glow
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Center Primary Showcase Image */}
-              <motion.div
-                className="absolute bg-white p-3.5 rounded-xl border-2 border-gold/30 shadow-2xl w-[210px] sm:w-[290px] bottom-6 right-2 sm:right-12 z-20"
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-              >
-                <div className="aspect-square overflow-hidden rounded-lg relative group">
-                  <img
-                    src={activeData.imageMain}
-                    alt="Jewellery main exhibit"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 bg-black/10 text-[10px] text-white p-3 flex items-end justify-between font-serif bg-gradient-to-t from-black/60 to-transparent font-semibold tracking-wider">
-                    <span>Signature Model</span>
-                    <span className="text-gold">★ VIP EXHIBIT</span>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Mini detail badge floating in between */}
-              <motion.div
-                className="absolute bg-[#FAF6F0] p-3 rounded-md border border-gold shadow-lg z-30 flex flex-col justify-center items-center text-center max-w-[100px] h-[100px] right-[40%] top-[40%]"
-                animate={{ scale: [1, 1.05, 1], rotate: [0, 4, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <Award className="w-5 h-5 text-gold-dark" />
-                <span className="text-[10px] font-sans font-bold uppercase text-charcoal tracking-wide mt-1">IGI</span>
-                <span className="text-[8px] text-charcoal/50">Certified Diamond</span>
-              </motion.div>
-
+              {/* Bounce Cards Animation Component */}
+              <BounceCards
+                images={getBounceImages(activeTab)}
+                containerWidth="100%"
+                containerHeight={460}
+                stiffness={300}
+                damping={12}
+                mass={0.9}
+              />
+              
             </div>
 
           </motion.div>

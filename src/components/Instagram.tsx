@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Instagram, Heart, MessageCircle, X, Search, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import BounceCards from './BounceCards';
 
 const INSTA_POSTS = [
   {
@@ -55,9 +56,35 @@ const INSTA_POSTS = [
 
 export default function InstagramGrid() {
   const [activePhoto, setActivePhoto] = useState<typeof INSTA_POSTS[0] | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const transformStyles = isMobile 
+    ? [
+        "rotate(-12deg) translate(-75px, 15px)",
+        "rotate(-7deg) translate(-45px, -10px)",
+        "rotate(-2deg) translate(-15px, 10px)",
+        "rotate(2deg) translate(15px, -15px)",
+        "rotate(7deg) translate(45px, 15px)",
+        "rotate(12deg) translate(75px, -5px)"
+      ]
+    : [
+        "rotate(-22deg) translate(-250px, 20px)",
+        "rotate(-13deg) translate(-155px, -15px)",
+        "rotate(-4deg) translate(-50px, 15px)",
+        "rotate(4deg) translate(50px, -20px)",
+        "rotate(13deg) translate(155px, 20px)",
+        "rotate(22deg) translate(250px, -10px)"
+      ];
 
   return (
-    <section className="py-20 bg-[#FCFBF7] border-b border-gold/10 font-sans" id="social-instagram">
+    <section className="py-20 bg-[#FCFBF7] border-b border-gold/10 font-sans overflow-hidden" id="social-instagram">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
@@ -72,49 +99,25 @@ export default function InstagramGrid() {
           </p>
         </div>
 
-        {/* Masonry-Style Feed Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {INSTA_POSTS.map((post) => (
-            <motion.div
-              key={post.id}
-              onClick={() => setActivePhoto(post)}
-              className="relative aspect-square rounded-xl overflow-hidden shadow-md border border-gold/10 bg-[#FAF6F0] group cursor-pointer"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
-            >
-              <img
-                src={post.image}
-                alt="Instagram Lookbook Shot"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                referrerPolicy="no-referrer"
-              />
+        {/* Dynamic Fan-out Animated Stack */}
+        <div className="w-full flex flex-col items-center justify-center py-8 relative">
+          <BounceCards
+            images={INSTA_POSTS.map(post => post.image)}
+            containerWidth="100%"
+            containerHeight={isMobile ? 260 : 380}
+            transformStyles={transformStyles}
+            stiffness={180}
+            damping={20}
+            onCardClick={(index) => {
+              setActivePhoto(INSTA_POSTS[index]);
+            }}
+          />
 
-              {/* Hover Dark Gold Overlay */}
-              <div className="absolute inset-0 bg-maroon/80 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex flex-col justify-center items-center text-white space-y-3 p-4 text-center">
-                <Instagram className="w-8 h-8 text-gold animate-[spin_10s_linear_infinite]" />
-                <span className="text-[10px] uppercase font-bold tracking-widest text-gold-light">
-                  {post.category}
-                </span>
-                
-                {/* Likes / Comments counts */}
-                <div className="flex items-center space-x-6 text-xs font-semibold pt-1">
-                  <div className="flex items-center gap-1">
-                    <Heart className="w-4 h-4 fill-[#FCFBF7]" />
-                    <span>{post.likes}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MessageCircle className="w-4 h-4 fill-white text-[#FAF6F0]" />
-                    <span>{post.comments}</span>
-                  </div>
-                </div>
-
-                <p className="text-[10.5px] leading-tight text-cream/90 line-clamp-2 max-w-xs font-light">
-                  {post.caption}
-                </p>
-              </div>
-
-            </motion.div>
-          ))}
+          {/* Prompt Interaction Hint */}
+          <div className="mt-8 flex items-center gap-1.5 text-charcoal/40 text-[10px] uppercase tracking-widest font-semibold">
+            <Sparkles className="w-3.5 h-3.5 text-[#AC8A1C] animate-pulse" />
+            <span>Hover / Touch to fan open &bull; Click to examine details</span>
+          </div>
         </div>
 
         {/* Dynamic Zoom Modal overlay */}
