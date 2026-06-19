@@ -1,0 +1,6 @@
+{
+  "name": "Mahavir Jewellers",
+  "description": "Premium luxury showcase and lead-generation website for Mahavir Jewellers, showcasing exquisite gold, diamond, and bridal collections.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
